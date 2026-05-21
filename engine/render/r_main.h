@@ -100,6 +100,7 @@ public:
 	int		VirtualScreenWidth();
 	int		VirtualScreenHeight();
 	float	VirtualScreenScaleFactor();
+	float	APICoordScale();
 	void	SetDpiScaleOverridePercent(int percent);
 	int		DpiScaleOverridePercent() const;
 	int		VirtualMap(int properValue);

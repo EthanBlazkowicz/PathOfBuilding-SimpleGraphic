@@ -1864,23 +1864,18 @@ int r_renderer_c::DrawStringCursorIndex(int height, int font, const char* str, i
 // ==============
 
 int r_renderer_c::VirtualScreenWidth() {
-	int const properWidth = apiDpiAware ? sys->video->vid.fbSize[0] : sys->video->vid.size[0];
-	return VirtualMap(properWidth);
+	return sys->video->vid.fbSize[0];
 }
 
 int r_renderer_c::VirtualScreenHeight() {
-	int const properHeight = apiDpiAware ? sys->video->vid.fbSize[1] : sys->video->vid.size[1];
-	return VirtualMap(properHeight);
+	return sys->video->vid.fbSize[1];
 }
 
 float r_renderer_c::VirtualScreenScaleFactor() {
-	if (apiDpiAware) {
-		if (dpiScaleOverridePercent > 0) {
-			return dpiScaleOverridePercent / 100.0f;
-		}
-		return sys->video->vid.dpiScale;
+	if (dpiScaleOverridePercent > 0) {
+		return dpiScaleOverridePercent / 100.0f;
 	}
-	return 1.0f;
+	return sys->video->vid.dpiScale;
 }
 
 void r_renderer_c::SetDpiScaleOverridePercent(int percent) {
@@ -1895,14 +1890,21 @@ int r_renderer_c::VirtualMap(int properValue) {
 	if (apiDpiAware) {
 		return properValue;
 	}
-	return static_cast<int>(properValue / sys->video->vid.dpiScale);
+	return static_cast<int>(properValue / VirtualScreenScaleFactor());
 }
 
 int r_renderer_c::VirtualUnmap(int mappedValue) {
 	if (apiDpiAware) {
 		return mappedValue;
 	}
-	return static_cast<int>(mappedValue * sys->video->vid.dpiScale);
+	return static_cast<int>(mappedValue * VirtualScreenScaleFactor());
+}
+
+float r_renderer_c::APICoordScale() {
+	if (apiDpiAware) {
+		return 1.0f;
+	}
+	return VirtualScreenScaleFactor();
 }
 
 // =====
